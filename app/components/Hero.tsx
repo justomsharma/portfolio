@@ -1,83 +1,88 @@
+const SKILLS = [
+  { num: '01', label: 'Voice Agents' },
+  { num: '02', label: 'LLM Orchestration' },
+  { num: '03', label: 'Inference Infrastructure' },
+]
+
 export default function Hero() {
-  const bars = [0, 0.8, 1.4, 2.2] // animation-delay seconds for each bar
-
   return (
-    <section className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col justify-center px-6 py-10 md:px-12">
-      {/* top bar */}
-      <div className="absolute left-6 right-6 top-8 flex justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-muted md:left-12 md:right-12">
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-1.5 w-1.5 animate-blink rounded-full bg-accent" />
-          Available for AI eng roles
-        </div>
-        <div>Bangalore · IST</div>
+    <section
+      id="top"
+      className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col px-6 pb-16 pt-20 md:px-12 md:pb-20"
+    >
+      {/* status bar */}
+      <div className="seq-status flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+        <span className="flex items-center gap-2">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+          Available for AI engineering roles
+        </span>
+        <span>Bangalore, India</span>
       </div>
 
-      {/* name */}
-      <h1
-        className="font-serif font-light leading-[0.85] tracking-[-0.04em]"
-        style={{ fontSize: 'clamp(96px, 18vw, 280px)' }}
-      >
-        Om <span className="italic text-accent">Sharma.</span>
-      </h1>
+      {/* the part that shrinks as you scroll away from it */}
+      <div className="hero-shrink flex flex-1 flex-col justify-center">
+        {/* name */}
+        <h1
+          className="seq-name font-sans font-bold leading-[0.9] tracking-[-0.04em] text-ink"
+          style={{ fontSize: 'clamp(64px, 13vw, 200px)' }}
+        >
+          Om Sharma<span className="text-accent">.</span>
+        </h1>
 
-      {/* subtitle */}
-      <p
-        className="mt-6 max-w-[720px] font-serif font-light italic leading-[1.4] text-muted"
-        style={{ fontSize: 'clamp(20px, 2.5vw, 32px)' }}
-      >
-        Engineer building real-time AI systems. Voice, LLM orchestration, the infrastructure that
-        makes models feel alive inside two seconds.
-      </p>
-
-      {/* latency visualizer */}
-      <div className="mb-10 mt-20 border-y border-rule py-8">
-        <div className="mb-6 flex justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-          <span>FIG · TYPICAL CONVERSATIONAL PIPELINE</span>
-          <span className="text-accent">STT → LLM → TTS</span>
+        {/* tagline — parallax wrapper is separate from the entrance-animated text */}
+        <div className="hero-parallax mt-6 max-w-[820px]">
+          <p
+            className="seq-tagline font-sans font-semibold leading-[1.05] tracking-[-0.02em] text-ink"
+            style={{ fontSize: 'clamp(28px, 4.5vw, 56px)' }}
+          >
+            Building real-time AI systems that feel instant.
+          </p>
         </div>
 
-        <div
-          className="grid items-center gap-2 font-mono text-xs"
-          style={{ gridTemplateColumns: '60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px' }}
-        >
-          <div className="text-[10px] uppercase tracking-[0.15em] text-muted">AUDIO</div>
-          <Bar delay={bars[0]} />
-          <div className="text-[10px] uppercase tracking-[0.15em] text-muted">STT</div>
-          <Bar delay={bars[1]} />
-          <div className="text-[10px] uppercase tracking-[0.15em] text-muted">LLM</div>
-          <Bar delay={bars[2]} />
-          <div className="text-[10px] uppercase tracking-[0.15em] text-muted">TTS</div>
-          <Bar delay={bars[3]} />
-          <div className="text-[10px] uppercase tracking-[0.15em] text-accent">REPLY</div>
-        </div>
+        {/* skill row */}
+        <ul className="mt-14 grid max-w-[820px] grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-12">
+          {SKILLS.map((s, i) => (
+            <li key={s.num} className={`group seq-skill-${i + 1}`}>
+              <div className="font-mono text-[11px] tracking-[0.15em] text-whisper">
+                {s.num}
+              </div>
+              <div className="mt-2 font-sans text-[15px] font-medium tracking-[-0.01em] text-ink">
+                {s.label}
+              </div>
+              {/* a line that grows on hover — width only, 0.3s */}
+              <div className="mt-3 h-px w-6 bg-accent transition-[width] duration-300 ease-out group-hover:w-full" />
+            </li>
+          ))}
+        </ul>
 
-        <p
-          className="mt-6 font-serif italic leading-[1.5] text-muted"
-          style={{ fontSize: '18px' }}
-        >
-          &ldquo;The seconds live in the gaps where you wait for certainty.&rdquo;
+        {/* paragraph */}
+        <p className="seq-para mt-12 max-w-[460px] text-[15px] leading-[1.7] text-muted">
+          I engineer voice agents, orchestrate LLM workflows, and build the
+          infrastructure that makes models feel alive inside two seconds.
         </p>
-      </div>
 
-      {/* scroll hint */}
-      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
-        Scroll
-        <div className="h-10 w-px animate-scrollHint bg-gradient-to-b from-muted to-transparent" />
+        {/* CTAs */}
+        <div className="seq-cta mt-10 flex flex-wrap items-center gap-6">
+          <a
+            href="#work"
+            className="group inline-flex items-center gap-3 rounded-sm border border-rule px-6 py-3 font-mono text-[12px] uppercase tracking-[0.15em] text-ink transition-colors duration-300 hover:border-ink/40"
+          >
+            View Work
+            <span className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1 text-accent">
+              &rarr;
+            </span>
+          </a>
+          <a
+            href="/resume.pdf"
+            className="group inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-ink"
+          >
+            Download Resume
+            <span className="inline-block transition-transform duration-300 ease-out group-hover:translate-y-0.5">
+              &darr;
+            </span>
+          </a>
+        </div>
       </div>
     </section>
-  )
-}
-
-function Bar({ delay }: { delay: number }) {
-  return (
-    <div
-      className="relative h-8 overflow-hidden rounded-sm"
-      style={{ background: 'rgba(232, 226, 213, 0.04)' }}
-    >
-      <div
-        className="absolute inset-0 animate-fill bg-accent"
-        style={{ animationDelay: `${delay}s`, transform: 'translateX(-100%)' }}
-      />
-    </div>
   )
 }

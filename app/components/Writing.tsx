@@ -33,7 +33,7 @@ const POSTS: Post[] = [
 
 export default function Writing() {
   return (
-    <section className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
+    <section id="writing" className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
       <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
         § 4 — Selected writing
       </p>

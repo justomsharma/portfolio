@@ -1,6 +1,6 @@
 export default function Projects() {
   return (
-    <section className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
+    <section id="work" className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
       <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
         § 3 — Personal projects
       </p>
@@ -38,13 +38,13 @@ export default function Projects() {
           href="https://github.com/justomsharma/jiragenie"
           target="_blank"
           rel="noopener noreferrer"
-          className="col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-all duration-500 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/[0.04] md:col-span-2"
+          className="group col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-[transform,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/25 md:col-span-2"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
             2026 · Open source
           </p>
           <div>
-            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em]">
+            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em] text-ink/85 transition-colors duration-300 group-hover:text-ink">
               <span className="italic">JiraGenie</span>
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-muted">
@@ -56,13 +56,13 @@ export default function Projects() {
         {/* OncoVision */}
         <a
           href="#"
-          className="col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-all duration-500 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/[0.04] md:col-span-2"
+          className="group col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-[transform,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/25 md:col-span-2"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
             2024 · PyTorch
           </p>
           <div>
-            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em]">
+            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em] text-ink/85 transition-colors duration-300 group-hover:text-ink">
               Onco<span className="italic">Vision</span>
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-muted">
@@ -74,13 +74,13 @@ export default function Projects() {
         {/* Latency visualizer */}
         <a
           href="#"
-          className="col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-all duration-500 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/[0.04] md:col-span-2"
+          className="group col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-[transform,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/25 md:col-span-2"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
             Forthcoming · July 2026
           </p>
           <div>
-            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em]">
+            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em] text-ink/85 transition-colors duration-300 group-hover:text-ink">
               Latency <span className="italic">visualizer</span>
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-muted">
@@ -94,13 +94,13 @@ export default function Projects() {
           href="https://github.com/justomsharma/portfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-all duration-500 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/[0.04] md:col-span-2"
+          className="group col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-[transform,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/25 md:col-span-2"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
             2026 · Next.js 16
           </p>
           <div>
-            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em]">
+            <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em] text-ink/85 transition-colors duration-300 group-hover:text-ink">
               This <span className="italic">site</span>
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-muted">

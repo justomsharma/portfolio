@@ -2,7 +2,7 @@
 
 /* Design tokens — Tailwind v4 uses CSS-based theme config (no tailwind.config.ts) */
 @theme {
-  --color-background: #000000;
+  --color-background: #050505;
   --color-ink: #e8e2d5;
   --color-muted: rgba(232, 226, 213, 0.72);
   --color-whisper: rgba(232, 226, 213, 0.5);
@@ -13,24 +13,6 @@
   --font-serif: var(--font-cormorant), Georgia, serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-
-  --animate-blink: blink 2s infinite;
-  --animate-fill: fill 4s ease-in-out infinite;
-  --animate-scrollHint: scrollHint 2s ease-in-out infinite;
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
-  }
-  @keyframes fill {
-    0%, 5% { transform: translateX(-100%); }
-    25%, 95% { transform: translateX(0%); }
-    100% { transform: translateX(0%); opacity: 0.3; }
-  }
-  @keyframes scrollHint {
-    0%, 100% { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
-    50% { opacity: 1; transform: scaleY(1); }
-  }
 }
 
 @layer base {
@@ -38,15 +20,85 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: #000000;
+    background-color: #050505;
     color: #e8e2d5;
     font-family: var(--font-geist-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
+  /* keep anchored sections clear of the fixed nav */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
   ::selection {
     background: #ff6b47;
-    color: #000000;
+    color: #050505;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Motion system
+   Everything here is deliberate and gated behind
+   prefers-reduced-motion so the default (reduced)
+   experience is fully visible and static.
+   ────────────────────────────────────────────── */
+
+@keyframes seqFadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes seqFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes seqReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* Top nav: hidden over the hero, slides in once you scroll past it */
+.site-nav {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease,
+    background-color 0.3s ease,
+    backdrop-filter 0.3s ease,
+    border-color 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+body[data-nav] .site-nav {
+  transform: translateY(0);
+  opacity: 1;
+}
+body[data-scrolled] .site-nav {
+  background-color: rgba(5, 5, 5, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom-color: var(--color-rule);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* page-load sequence */
+  .seq-status   { opacity: 0; animation: seqFadeDown 0.5s ease 0.3s forwards; }
+  .seq-name     { clip-path: inset(0 100% 0 0); animation: seqReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; }
+  .seq-tagline  { opacity: 0; animation: seqFadeUp 0.6s ease 0.9s forwards; }
+  .seq-skill-1  { opacity: 0; animation: seqFadeUp 0.5s ease 1.2s forwards; }
+  .seq-skill-2  { opacity: 0; animation: seqFadeUp 0.5s ease 1.28s forwards; }
+  .seq-skill-3  { opacity: 0; animation: seqFadeUp 0.5s ease 1.36s forwards; }
+  .seq-para     { opacity: 0; animation: seqFadeUp 0.5s ease 1.45s forwards; }
+  .seq-cta      { opacity: 0; animation: seqFadeUp 0.5s ease 1.55s forwards; }
+  .seq-scroll   { opacity: 0; animation: seqFadeUp 0.5s ease 1.65s forwards; }
+
+  /* scroll-driven hero shrink + tagline parallax (vars set by MotionLayer) */
+  .hero-shrink {
+    transform: scale(calc(1 - 0.04 * var(--hero, 0)));
+    transform-origin: left top;
+    will-change: transform;
+  }
+  .hero-parallax {
+    transform: translateY(calc(var(--scroll, 0) * 0.05px));
+    will-change: transform;
   }
 }

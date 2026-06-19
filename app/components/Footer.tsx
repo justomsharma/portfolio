@@ -31,7 +31,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="mx-auto max-w-[1100px] border-t border-rule px-6 pb-16 pt-32 md:px-12 md:pb-20 md:pt-36">
+    <footer id="contact" className="mx-auto max-w-[1100px] border-t border-rule px-6 pb-16 pt-32 md:px-12 md:pb-20 md:pt-36">
       <p
         className="mb-20 max-w-[900px] font-serif font-light italic leading-[1.15] tracking-[-0.02em]"
         style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
