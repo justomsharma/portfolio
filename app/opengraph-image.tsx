@@ -7,9 +7,9 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 export default async function OG() {
-  const [cormorantNormal, cormorantItalic, geistMono] = await Promise.all([
-    readFile(join(process.cwd(), 'assets/Cormorant-Normal.woff')),
-    readFile(join(process.cwd(), 'assets/Cormorant-Italic.woff')),
+  const [geistBold, geistSemiBold, geistMono] = await Promise.all([
+    readFile(join(process.cwd(), 'node_modules/geist/dist/fonts/geist-sans/Geist-Bold.ttf')),
+    readFile(join(process.cwd(), 'node_modules/geist/dist/fonts/geist-sans/Geist-SemiBold.ttf')),
     readFile(join(process.cwd(), 'node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.ttf')),
   ])
 
@@ -19,12 +19,12 @@ export default async function OG() {
         style={{
           width: '100%',
           height: '100%',
-          background: '#000000',
+          background: '#050505',
           padding: '80px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          fontFamily: 'Cormorant',
+          fontFamily: 'Geist',
         }}
       >
         {/* top bar */}
@@ -32,6 +32,7 @@ export default async function OG() {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
+            alignItems: 'center',
             fontSize: 18,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
@@ -39,38 +40,39 @@ export default async function OG() {
             fontFamily: 'Geist Mono',
           }}
         >
-          <div>OM SHARMA · BANGALORE</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 999, background: '#FF6B47' }} />
+            AVAILABLE FOR AI ENGINEERING ROLES
+          </div>
           <div style={{ color: '#FF6B47' }}>OMSHARMA.DEV</div>
         </div>
 
-        {/* name */}
+        {/* name + tagline */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div
             style={{
-              fontSize: 200,
+              fontSize: 180,
               lineHeight: 0.9,
               letterSpacing: '-0.04em',
               color: '#E8E2D5',
-              fontWeight: 300,
+              fontWeight: 700,
               display: 'flex',
             }}
           >
-            Om{' '}
-            <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#FF6B47', marginLeft: 24 }}>
-              Sharma.
-            </span>
+            Om Sharma<span style={{ color: '#FF6B47' }}>.</span>
           </div>
           <div
             style={{
-              marginTop: 24,
-              fontSize: 36,
-              fontStyle: 'italic',
-              color: 'rgba(232, 226, 213, 0.7)',
-              maxWidth: '900px',
-              lineHeight: 1.3,
+              marginTop: 28,
+              fontSize: 40,
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+              color: '#E8E2D5',
+              maxWidth: '820px',
+              lineHeight: 1.1,
             }}
           >
-            Engineer building real-time AI systems.
+            Building real-time AI systems that feel instant.
           </div>
         </div>
 
@@ -87,15 +89,15 @@ export default async function OG() {
           }}
         >
           <div>VOICE · LLM · LATENCY</div>
-          <div>2026</div>
+          <div>BANGALORE · 2026</div>
         </div>
       </div>
     ),
     {
       ...size,
       fonts: [
-        { name: 'Cormorant', data: cormorantNormal, style: 'normal', weight: 300 },
-        { name: 'Cormorant', data: cormorantItalic, style: 'italic', weight: 400 },
+        { name: 'Geist', data: geistBold, style: 'normal', weight: 700 },
+        { name: 'Geist', data: geistSemiBold, style: 'normal', weight: 600 },
         { name: 'Geist Mono', data: geistMono, style: 'normal', weight: 400 },
       ],
     }
