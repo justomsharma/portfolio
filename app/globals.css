@@ -4,11 +4,11 @@
 @theme {
   --color-background: #000000;
   --color-ink: #e8e2d5;
-  --color-muted: rgba(232, 226, 213, 0.55);
-  --color-whisper: rgba(232, 226, 213, 0.35);
+  --color-muted: rgba(232, 226, 213, 0.72);
+  --color-whisper: rgba(232, 226, 213, 0.5);
   --color-accent: #ff6b47;
-  --color-rule: rgba(232, 226, 213, 0.08);
-  --color-rule-soft: rgba(232, 226, 213, 0.05);
+  --color-rule: rgba(232, 226, 213, 0.1);
+  --color-rule-soft: rgba(232, 226, 213, 0.06);
 
   --font-serif: var(--font-cormorant), Georgia, serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
