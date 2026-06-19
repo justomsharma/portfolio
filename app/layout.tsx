@@ -6,10 +6,12 @@ import './globals.css'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['300', '400', '500'],
+  weight: ['300', '400'],
   style: ['normal', 'italic'],
   display: 'swap',
+  preload: true,
   variable: '--font-cormorant',
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
