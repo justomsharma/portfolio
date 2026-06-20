@@ -4,10 +4,10 @@ import { useEffect } from 'react'
 
 /**
  * The site's entire scroll-driven motion runs through this one component.
- * It does no layout — it renders only the fixed scroll indicator. Everything
- * else it does is set CSS custom properties on <html> and data-attributes on
- * <body>; the actual transforms/transitions live in globals.css. One rAF-
- * throttled scroll listener, so the main thread stays quiet.
+ * It renders nothing — it only sets CSS custom properties on <html> and
+ * data-attributes on <body>; the actual transforms/transitions live in
+ * globals.css. One rAF-throttled scroll listener, so the main thread stays
+ * quiet.
  *
  *   --hero           0 → 1   across the first viewport (drives hero shrink)
  *   --scroll         raw scrollY in px (drives tagline parallax)
@@ -85,18 +85,6 @@ export default function MotionLayer() {
     }
   }, [])
 
-  return (
-    <div
-      aria-hidden
-      className="seq-scroll pointer-events-none fixed bottom-6 left-6 z-40 hidden flex-col items-center gap-3 md:flex"
-    >
-      <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted [writing-mode:vertical-rl]">
-        Scroll
-      </span>
-      <span
-        className="w-px bg-accent/60"
-        style={{ height: 'calc(16px + 56px * var(--page-progress, 0))' }}
-      />
-    </div>
-  )
+  // No visible output — this component only drives scroll state via CSS vars.
+  return null
 }

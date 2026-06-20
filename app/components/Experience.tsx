@@ -44,6 +44,15 @@ const ROLES: Role[] = [
   },
 ]
 
+// Circuit-trace rail: vertical runs joined by short diagonal jogs. Each role's
+// node sits on the segment that runs past its height — RAIL_X is that segment's
+// x (in the 0–32 viewBox) per node, so the dot can be nudged onto the line.
+const RAIL_PATH =
+  'M16,0 L16,150 L10,180 L10,440 L22,470 L22,860 L16,890 L16,1000'
+const RAIL_X = [16, 10, 22]
+const VIEWBOX_W = 32
+const RAIL_PX = 40 // .exp-rail width — viewBox x maps to px at RAIL_PX / VIEWBOX_W
+
 export default function Experience() {
   return (
     <section
@@ -63,7 +72,6 @@ export default function Experience() {
       <div className="exp">
         {/* the geometric line itself — purely decorative, drawn by CSS */}
         <div className="exp-rail hidden md:block" aria-hidden>
-          <span className="exp-scroll-label">Scroll</span>
           <svg
             className="exp-svg"
             viewBox="0 0 32 1000"
@@ -73,13 +81,13 @@ export default function Experience() {
             {/* circuit-trace route: vertical runs joined by short diagonal jogs */}
             <path
               className="rail-base"
-              d="M16,0 L16,150 L10,180 L10,440 L22,470 L22,720 L16,750 L16,1000"
+              d={RAIL_PATH}
               strokeWidth={1.5}
               vectorEffect="non-scaling-stroke"
             />
             <path
               className="rail-coral"
-              d="M16,0 L16,150 L10,180 L10,440 L22,470 L22,720 L16,750 L16,1000"
+              d={RAIL_PATH}
               strokeWidth={1.5}
               vectorEffect="non-scaling-stroke"
               pathLength={1}
@@ -94,10 +102,17 @@ export default function Experience() {
             <div key={r.company} className="contents">
               {/* rail node, aligned to this role's heading */}
               <div
-                className={`exp-node hidden md:flex md:items-start md:gap-2 md:pl-[11px] ${
+                className={`exp-node hidden md:flex md:items-start md:gap-3 md:pl-[15px] ${
                   i === 0 ? 'pt-0' : 'pt-12'
                 }`}
-                style={{ '--at': (i / ROLES.length).toFixed(3) } as CSSProperties}
+                style={
+                  {
+                    '--at': (i / ROLES.length).toFixed(3),
+                    // shift the dot from its column slot (x=16) onto this
+                    // node's rail segment, without reflowing the labels
+                    '--dot-shift': `${(((RAIL_X[i] ?? 16) - 16) * RAIL_PX) / VIEWBOX_W}px`,
+                  } as CSSProperties
+                }
                 aria-hidden
               >
                 <span className="exp-dot mt-[6px] h-2.5 w-2.5 shrink-0 rounded-full border" />

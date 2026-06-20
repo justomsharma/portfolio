@@ -7,6 +7,7 @@
   --color-muted: rgba(232, 226, 213, 0.72);
   --color-whisper: rgba(232, 226, 213, 0.5);
   --color-accent: #ff6b47;
+  --color-exp-orange: #ff7a1a; /* fixed orange for experience nodes (doesn't fade with scroll) */
   --color-rule: rgba(232, 226, 213, 0.1);
   --color-rule-soft: rgba(232, 226, 213, 0.06);
 
@@ -89,7 +90,6 @@ body[data-scrolled] .site-nav {
   .seq-skill-3  { opacity: 0; animation: seqFadeUp 0.5s ease 1.36s forwards; }
   .seq-para     { opacity: 0; animation: seqFadeUp 0.5s ease 1.45s forwards; }
   .seq-cta      { opacity: 0; animation: seqFadeUp 0.5s ease 1.55s forwards; }
-  .seq-scroll   { opacity: 0; animation: seqFadeUp 0.5s ease 1.65s forwards; }
 
   /* scroll-driven hero shrink + tagline parallax (vars set by MotionLayer) */
   .hero-shrink {
@@ -134,23 +134,11 @@ body[data-scrolled] .site-nav {
   z-index: 0;
   pointer-events: none;
 }
-.exp-scroll-label {
-  position: absolute;
-  top: 2px;
-  left: 16px;
-  transform: translateX(-50%);
-  writing-mode: vertical-rl;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--color-whisper);
-}
 .exp-svg {
   position: absolute;
-  inset: 24px 0 0 0;
+  inset: 0;
   width: 100%;
-  height: calc(100% - 24px);
+  height: 100%;
 }
 .rail-base {
   stroke: var(--color-rule);
@@ -158,23 +146,55 @@ body[data-scrolled] .site-nav {
 .rail-coral {
   stroke: var(--color-accent);
   stroke-dashoffset: 0; /* fallback: fully drawn */
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-accent) 45%, transparent));
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 55%, transparent));
 }
 
-/* nodes — default lit (fallback); --at is each node's fraction down the rail */
+/* nodes — default lit (fallback); --at is each node's fraction down the rail.
+   An unlit node is an empty outlined circle; a lit one fills coral and casts a
+   three-blade fan glow (the ::before pseudo) rather than a flat circular halo. */
 .exp-node {
   --lit: 1;
 }
 .exp-dot {
-  background: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), transparent);
-  border-color: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), var(--color-rule));
-  box-shadow: 0 0 calc(12px * var(--lit)) color-mix(in srgb, var(--color-accent) calc(var(--lit) * 55%), transparent);
+  position: relative;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  flex: none; /* identical size for every node, regardless of row height */
+  left: var(--dot-shift, 0); /* nudge onto the jogged rail segment */
+  /* opaque base so the rail line never shows through the dot; orange fills in as lit */
+  background: color-mix(in srgb, var(--color-exp-orange) calc(var(--lit) * 100%), var(--color-background));
+  border-color: color-mix(in srgb, var(--color-exp-orange) calc(var(--lit) * 100%), var(--color-rule));
+  transition: background 0.2s linear, border-color 0.2s linear;
+}
+/* three-blade fan glow behind the dot — only the blades are lit, masked to
+   fade outward, so it reads as a fanned glow not a solid disc */
+.exp-dot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: calc(var(--lit) * 0.5);
+  transition: opacity 0.25s linear;
+  background: repeating-conic-gradient(
+    from 90deg at 50% 50%,
+    color-mix(in srgb, var(--color-exp-orange) 70%, transparent) 0deg 50deg,
+    transparent 50deg 120deg
+  );
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 6%, transparent 62%);
+  mask: radial-gradient(circle at 50% 50%, #000 6%, transparent 62%);
+  filter: blur(2.5px);
 }
 .exp-num {
-  color: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), var(--color-whisper));
+  color: color-mix(in srgb, var(--color-exp-orange) calc(var(--lit) * 100%), var(--color-whisper));
 }
 .exp-company {
-  color: color-mix(in srgb, var(--color-ink) calc(var(--lit) * 100%), var(--color-whisper));
+  color: color-mix(in srgb, #ffffff calc(var(--lit) * 100%), var(--color-whisper));
+  text-shadow: 0 0 calc(10px * var(--lit)) rgba(255, 255, 255, calc(var(--lit) * 0.4));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -183,7 +203,15 @@ body[data-scrolled] .site-nav {
     stroke-dashoffset: calc(1 - var(--exp-progress, 0));
     transition: stroke-dashoffset 0.12s linear;
   }
+  /* comet trail: a node lights as the rail reaches it (the * 60 gate), then its
+     glow decays the further the scroll has moved past it — most-recently-passed
+     is brightest, older ones fade toward a faint floor. */
   body[data-motion] .exp-node {
-    --lit: clamp(0, (var(--exp-progress, 0) - var(--at, 0)) * 60, 1);
+    --past: calc(var(--exp-progress, 0) - var(--at, 0));
+    --lit: clamp(
+      0,
+      min(var(--past) * 60, max(1 - 0.9 * var(--past), 0.12)),
+      1
+    );
   }
 }
