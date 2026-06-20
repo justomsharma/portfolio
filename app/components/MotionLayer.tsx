@@ -12,9 +12,11 @@ import { useEffect } from 'react'
  *   --hero           0 → 1   across the first viewport (drives hero shrink)
  *   --scroll         raw scrollY in px (drives tagline parallax)
  *   --page-progress  0 → 1   across the whole document (drives accent fade + indicator)
+ *   --exp-progress   0 → 1   across the experience section (draws the timeline rail)
  *   --color-accent   coral → ink, interpolated by page-progress
  *   data-scrolled    present once scrolled past ~10px (nav gets its blur)
  *   data-nav         present once past 60% of the hero (nav slides in)
+ *   data-motion      present once JS motion is live (CSS switches static → dynamic)
  */
 
 const ACCENT = [255, 107, 71] // #ff6b47 coral
@@ -25,6 +27,7 @@ export default function MotionLayer() {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const root = document.documentElement
     const body = document.body
+    const expEl = document.getElementById('experience')
 
     let ticking = false
 
@@ -40,6 +43,14 @@ export default function MotionLayer() {
       root.style.setProperty('--scroll', String(y))
       root.style.setProperty('--hero', hero.toFixed(4))
       root.style.setProperty('--page-progress', page.toFixed(4))
+
+      // experience timeline: 0 as the section top reaches ~70% of the viewport,
+      // 1 as its bottom passes the same line — drives the rail draw + node glow
+      if (expEl) {
+        const rect = expEl.getBoundingClientRect()
+        const exp = Math.min(1, Math.max(0, (vh * 0.7 - rect.top) / rect.height))
+        root.style.setProperty('--exp-progress', exp.toFixed(4))
+      }
 
       // accent gradually resolves from coral toward the ink through the page
       const r = Math.round(ACCENT[0] + (INK[0] - ACCENT[0]) * page)
@@ -63,6 +74,7 @@ export default function MotionLayer() {
     apply() // set initial state (covers reloads at a scrolled position)
 
     if (!reduce) {
+      body.setAttribute('data-motion', '') // CSS switches the rail from static to scroll-driven
       window.addEventListener('scroll', onScroll, { passive: true })
       window.addEventListener('resize', onScroll, { passive: true })
     }

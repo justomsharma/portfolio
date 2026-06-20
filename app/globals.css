@@ -102,3 +102,88 @@ body[data-scrolled] .site-nav {
     will-change: transform;
   }
 }
+
+/* ──────────────────────────────────────────────
+   Experience — geometric scroll rail
+   A circuit-trace timeline pinned to the left of
+   the experience list. The coral line draws down
+   as you scroll the section; each node lights as
+   the line reaches it. Everything is driven by a
+   single var (--exp-progress) set in MotionLayer's
+   existing rAF loop and resolved entirely in CSS —
+   no extra listeners, no main-thread work.
+
+   Default (no JS / reduced motion / older browsers):
+   the rail is fully drawn and every node is lit, so
+   it reads as a finished timeline and never blocks
+   or breaks the page.
+   ────────────────────────────────────────────── */
+.exp {
+  position: relative;
+}
+.exp-rows {
+  position: relative;
+  z-index: 1;
+}
+.exp-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  z-index: 0;
+  pointer-events: none;
+}
+.exp-scroll-label {
+  position: absolute;
+  top: 2px;
+  left: 16px;
+  transform: translateX(-50%);
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-whisper);
+}
+.exp-svg {
+  position: absolute;
+  inset: 24px 0 0 0;
+  width: 100%;
+  height: calc(100% - 24px);
+}
+.rail-base {
+  stroke: var(--color-rule);
+}
+.rail-coral {
+  stroke: var(--color-accent);
+  stroke-dashoffset: 0; /* fallback: fully drawn */
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-accent) 45%, transparent));
+}
+
+/* nodes — default lit (fallback); --at is each node's fraction down the rail */
+.exp-node {
+  --lit: 1;
+}
+.exp-dot {
+  background: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), transparent);
+  border-color: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), var(--color-rule));
+  box-shadow: 0 0 calc(12px * var(--lit)) color-mix(in srgb, var(--color-accent) calc(var(--lit) * 55%), transparent);
+}
+.exp-num {
+  color: color-mix(in srgb, var(--color-accent) calc(var(--lit) * 100%), var(--color-whisper));
+}
+.exp-company {
+  color: color-mix(in srgb, var(--color-ink) calc(var(--lit) * 100%), var(--color-whisper));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* once JS is live, the rail tracks scroll instead of sitting fully drawn */
+  body[data-motion] .rail-coral {
+    stroke-dashoffset: calc(1 - var(--exp-progress, 0));
+    transition: stroke-dashoffset 0.12s linear;
+  }
+  body[data-motion] .exp-node {
+    --lit: clamp(0, (var(--exp-progress, 0) - var(--at, 0)) * 60, 1);
+  }
+}

@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+
 type Role = {
   company: string
   role: string
@@ -44,7 +46,10 @@ const ROLES: Role[] = [
 
 export default function Experience() {
   return (
-    <section className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
+    <section
+      id="experience"
+      className="mx-auto max-w-[1180px] border-t border-rule px-6 py-32 md:px-12 md:py-36"
+    >
       <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
         § 2 — Experience
       </p>
@@ -55,38 +60,91 @@ export default function Experience() {
         Where I&apos;ve <span className="italic text-accent">shipped.</span>
       </h2>
 
-      <div>
-        {ROLES.map((r, i) => (
-          <article
-            key={r.company}
-            className={`group border-t border-rule py-12 transition-all duration-500 ${i === 0 ? 'border-t-0 pt-0' : ''}`}
+      <div className="exp">
+        {/* the geometric line itself — purely decorative, drawn by CSS */}
+        <div className="exp-rail hidden md:block" aria-hidden>
+          <span className="exp-scroll-label">Scroll</span>
+          <svg
+            className="exp-svg"
+            viewBox="0 0 32 1000"
+            preserveAspectRatio="none"
+            fill="none"
           >
-            <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="font-serif text-[40px] font-normal leading-none tracking-[-0.02em] md:text-[48px]">
-                <span className="italic text-accent">{r.company}</span>
-              </h3>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-                {r.dates}
-              </p>
-            </header>
+            {/* circuit-trace route: vertical runs joined by short diagonal jogs */}
+            <path
+              className="rail-base"
+              d="M16,0 L16,150 L10,180 L10,440 L22,470 L22,720 L16,750 L16,1000"
+              strokeWidth={1.5}
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              className="rail-coral"
+              d="M16,0 L16,150 L10,180 L10,440 L22,470 L22,720 L16,750 L16,1000"
+              strokeWidth={1.5}
+              vectorEffect="non-scaling-stroke"
+              pathLength={1}
+              strokeDasharray={1}
+            />
+          </svg>
+        </div>
 
-            <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
-              {r.role} · {r.location}
-            </p>
+        {/* content rows — each role sits beside its node, on the same grid row */}
+        <div className="exp-rows grid grid-cols-1 md:grid-cols-[160px_1fr]">
+          {ROLES.map((r, i) => (
+            <div key={r.company} className="contents">
+              {/* rail node, aligned to this role's heading */}
+              <div
+                className={`exp-node hidden md:flex md:items-start md:gap-2 md:pl-[11px] ${
+                  i === 0 ? 'pt-0' : 'pt-12'
+                }`}
+                style={{ '--at': (i / ROLES.length).toFixed(3) } as CSSProperties}
+                aria-hidden
+              >
+                <span className="exp-dot mt-[6px] h-2.5 w-2.5 shrink-0 rounded-full border" />
+                <span className="flex flex-col gap-1">
+                  <span className="exp-num font-mono text-[11px] tracking-[0.1em]">
+                    0{i + 1}
+                  </span>
+                  <span className="exp-company max-w-[110px] font-mono text-[10px] uppercase leading-[1.3] tracking-[0.2em]">
+                    {r.company}
+                  </span>
+                </span>
+              </div>
 
-            <ul className="space-y-4">
-              {r.bullets.map((b, j) => (
-                <li
-                  key={j}
-                  className="grid grid-cols-[16px_1fr] gap-3 text-[16px] leading-[1.6] text-ink/80 md:text-[17px]"
-                >
-                  <span className="pt-[10px] font-mono text-[10px] text-accent">→</span>
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
+              {/* role content — unchanged */}
+              <article
+                className={`group border-t border-rule py-12 transition-all duration-500 ${
+                  i === 0 ? 'border-t-0 pt-0' : ''
+                }`}
+              >
+                <header className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className="font-serif text-[40px] font-normal leading-none tracking-[-0.02em] md:text-[48px]">
+                    <span className="italic text-accent">{r.company}</span>
+                  </h3>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+                    {r.dates}
+                  </p>
+                </header>
+
+                <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
+                  {r.role} · {r.location}
+                </p>
+
+                <ul className="space-y-4">
+                  {r.bullets.map((b, j) => (
+                    <li
+                      key={j}
+                      className="grid grid-cols-[16px_1fr] gap-3 text-[16px] leading-[1.6] text-ink/80 md:text-[17px]"
+                    >
+                      <span className="pt-[10px] font-mono text-[10px] text-accent">→</span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
