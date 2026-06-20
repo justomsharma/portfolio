@@ -13,14 +13,15 @@ import { useEffect } from 'react'
  *   --scroll         raw scrollY in px (drives tagline parallax)
  *   --page-progress  0 → 1   across the whole document (drives accent fade + indicator)
  *   --exp-progress   0 → 1   across the experience section (draws the timeline rail)
- *   --color-accent   coral → ink, interpolated by page-progress
+ *   --color-accent   accent → ink, interpolated by page-progress
  *   data-scrolled    present once scrolled past ~10px (nav gets its blur)
  *   data-nav         present once past 60% of the hero (nav slides in)
  *   data-motion      present once JS motion is live (CSS switches static → dynamic)
+ *
+ * The accent→ink resolve reads the LIVE theme: --accent-rgb / --ink-rgb are
+ * bare "r g b" triples defined per theme in globals.css, so the same loop works
+ * in dark and light. They're re-read on the 'themechange' event the toggle fires.
  */
-
-const ACCENT = [255, 107, 71] // #ff6b47 coral
-const INK = [232, 226, 213] // #e8e2d5 — accent "resolves" to the ink as you descend
 
 export default function MotionLayer() {
   useEffect(() => {
@@ -28,6 +29,25 @@ export default function MotionLayer() {
     const root = document.documentElement
     const body = document.body
     const expEl = document.getElementById('experience')
+
+    // read a "r g b" custom-property triple off <html>; fall back to the dark palette
+    const readTriple = (name: string, fallback: number[]) => {
+      const raw = getComputedStyle(root).getPropertyValue(name).trim()
+      const parts = raw.split(/[\s,]+/).map(Number).filter((n) => !Number.isNaN(n))
+      return parts.length === 3 ? parts : fallback
+    }
+
+    let accent = readTriple('--accent-rgb', [255, 107, 71])
+    let ink = readTriple('--ink-rgb', [232, 226, 213])
+
+    // the toggle clears the inline --color-accent override so the new theme's
+    // base accent shows through, then we re-read both bases and repaint
+    const onThemeChange = () => {
+      root.style.removeProperty('--color-accent')
+      accent = readTriple('--accent-rgb', accent)
+      ink = readTriple('--ink-rgb', ink)
+      apply()
+    }
 
     let ticking = false
 
@@ -52,10 +72,10 @@ export default function MotionLayer() {
         root.style.setProperty('--exp-progress', exp.toFixed(4))
       }
 
-      // accent gradually resolves from coral toward the ink through the page
-      const r = Math.round(ACCENT[0] + (INK[0] - ACCENT[0]) * page)
-      const g = Math.round(ACCENT[1] + (INK[1] - ACCENT[1]) * page)
-      const b = Math.round(ACCENT[2] + (INK[2] - ACCENT[2]) * page)
+      // accent gradually resolves from the theme accent toward its ink down the page
+      const r = Math.round(accent[0] + (ink[0] - accent[0]) * page)
+      const g = Math.round(accent[1] + (ink[1] - accent[1]) * page)
+      const b = Math.round(accent[2] + (ink[2] - accent[2]) * page)
       root.style.setProperty('--color-accent', `rgb(${r}, ${g}, ${b})`)
 
       if (y > 10) body.setAttribute('data-scrolled', '')
@@ -73,6 +93,9 @@ export default function MotionLayer() {
 
     apply() // set initial state (covers reloads at a scrolled position)
 
+    // repaint the accent whenever the theme flips (works under reduced motion too)
+    window.addEventListener('themechange', onThemeChange)
+
     if (!reduce) {
       body.setAttribute('data-motion', '') // CSS switches the rail from static to scroll-driven
       window.addEventListener('scroll', onScroll, { passive: true })
@@ -80,6 +103,7 @@ export default function MotionLayer() {
     }
 
     return () => {
+      window.removeEventListener('themechange', onThemeChange)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }

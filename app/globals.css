@@ -1,19 +1,84 @@
 @import "tailwindcss";
 
-/* Design tokens — Tailwind v4 uses CSS-based theme config (no tailwind.config.ts) */
+/* Design tokens — Tailwind v4 uses CSS-based theme config (no tailwind.config.ts).
+   The token VALUES point at runtime-swappable vars (--c-*) defined per theme
+   below, so flipping [data-theme] on <html> re-resolves every utility
+   (text-ink, bg-background, text-accent, …) in a single paint — no JS,
+   no component re-render. */
 @theme {
-  --color-background: #050505;
-  --color-ink: #e8e2d5;
-  --color-muted: rgba(232, 226, 213, 0.72);
-  --color-whisper: rgba(232, 226, 213, 0.5);
-  --color-accent: #ff6b47;
-  --color-exp-orange: #ff7a1a; /* fixed orange for experience nodes (doesn't fade with scroll) */
-  --color-rule: rgba(232, 226, 213, 0.1);
-  --color-rule-soft: rgba(232, 226, 213, 0.06);
+  --color-background: var(--c-bg);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-whisper: var(--c-whisper);
+  --color-accent: var(--c-accent);
+  --color-exp-orange: var(--c-exp-orange); /* experience nodes (doesn't fade with scroll) */
+  --color-rule: var(--c-rule);
+  --color-rule-soft: var(--c-rule-soft);
 
   --font-serif: var(--font-cormorant), Georgia, serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ──────────────────────────────────────────────
+   Theme palettes
+   :root defaults to DARK, so server-rendered HTML (which carries no
+   data-theme until the pre-paint init script runs) is already the dark
+   design — the documented default and a safe no-JS fallback.
+   --accent-rgb / --ink-rgb are bare triples MotionLayer reads to drive the
+   scroll accent→ink resolve without a per-theme code path.
+   ────────────────────────────────────────────── */
+:root,
+[data-theme='dark'] {
+  --c-bg: #050505;
+  --c-ink: #e8e2d5;
+  --c-muted: rgba(232, 226, 213, 0.72);
+  --c-whisper: rgba(232, 226, 213, 0.5);
+  --c-accent: #ff6b47;
+  --c-exp-orange: #ff7a1a;
+  --c-rule: rgba(232, 226, 213, 0.1);
+  --c-rule-soft: rgba(232, 226, 213, 0.06);
+
+  --accent-rgb: 255 107 71;
+  --ink-rgb: 232 226 213;
+
+  /* per-theme chrome */
+  --nav-bg: rgba(5, 5, 5, 0.7);
+  --rail-glow: 4px; /* coral rail drop-shadow blur */
+  --glow-strength: 1; /* node fan-glow multiplier */
+  --sel-text: #050505;
+
+  /* toggle */
+  --tt-track-bg: rgba(255, 255, 255, 0.045);
+  --tt-thumb-bg: #050505;
+  --tt-thumb-shadow: 0 0 12px rgba(255, 107, 71, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  /* warm paper, not pure white — keeps the editorial warmth of the dark design */
+  --c-bg: #f7f4ec;
+  --c-ink: #221c14;
+  --c-muted: rgba(34, 28, 20, 0.66);
+  --c-whisper: rgba(34, 28, 20, 0.42);
+  /* coral deepened so it stays legible on paper (the hot coral vibrates on light) */
+  --c-accent: #d8502b;
+  --c-exp-orange: #d8502b;
+  --c-rule: rgba(34, 28, 20, 0.13);
+  --c-rule-soft: rgba(34, 28, 20, 0.07);
+
+  --accent-rgb: 216 80 43;
+  --ink-rgb: 34 28 20;
+
+  --nav-bg: rgba(247, 244, 236, 0.72);
+  --rail-glow: 0.5px;
+  --glow-strength: 0.4;
+  --sel-text: #f7f4ec;
+
+  --tt-track-bg: rgba(34, 28, 20, 0.06);
+  --tt-thumb-bg: #ffffff;
+  --tt-thumb-shadow: 0 2px 8px rgba(34, 28, 20, 0.18);
+  color-scheme: light;
 }
 
 @layer base {
@@ -21,20 +86,22 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: #050505;
-    color: #e8e2d5;
+    background-color: var(--color-background);
+    color: var(--color-ink);
     font-family: var(--font-geist-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* smooth the palette swap for anything not covered by the view transition */
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
   /* keep anchored sections clear of the fixed nav */
   [id] {
     scroll-margin-top: 6rem;
   }
   ::selection {
-    background: #ff6b47;
-    color: #050505;
+    background: var(--color-accent);
+    color: var(--sel-text);
   }
 }
 
@@ -75,7 +142,7 @@ body[data-nav] .site-nav {
   opacity: 1;
 }
 body[data-scrolled] .site-nav {
-  background-color: rgba(5, 5, 5, 0.7);
+  background-color: var(--nav-bg);
   backdrop-filter: blur(10px);
   border-bottom-color: var(--color-rule);
 }
@@ -146,7 +213,8 @@ body[data-scrolled] .site-nav {
 .rail-coral {
   stroke: var(--color-accent);
   stroke-dashoffset: 0; /* fallback: fully drawn */
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 55%, transparent));
+  /* glow blur is per-theme: a bloom on black, a crisp drawn line on paper */
+  filter: drop-shadow(0 0 var(--rail-glow) color-mix(in srgb, var(--color-accent) 55%, transparent));
 }
 
 /* nodes — default lit (fallback); --at is each node's fraction down the rail.
@@ -178,7 +246,7 @@ body[data-scrolled] .site-nav {
   height: 52px;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  opacity: calc(var(--lit) * 0.5);
+  opacity: calc(var(--lit) * 0.5 * var(--glow-strength));
   transition: opacity 0.25s linear;
   background: repeating-conic-gradient(
     from 90deg at 50% 50%,
@@ -213,5 +281,137 @@ body[data-scrolled] .site-nav {
       min(var(--past) * 60, max(1 - 0.9 * var(--past), 0.12)),
       1
     );
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Theme toggle — slider pill
+   Both icons live in the track; the thumb slides over the active one.
+   Light → thumb left over the sun; dark → thumb right over the moon.
+   The active icon lights coral; the other dims to whisper.
+   Everything is a GPU transform — no JS animation.
+   ────────────────────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  border-radius: 9999px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.tt-track {
+  position: relative;
+  display: block;
+  width: 58px;
+  height: 28px;
+  border-radius: 9999px;
+  background: var(--tt-track-bg);
+  border: 1px solid var(--color-rule);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.tt-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--tt-thumb-bg);
+  box-shadow: var(--tt-thumb-shadow);
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease,
+    box-shadow 0.4s ease;
+}
+[data-theme-state='dark'] .tt-thumb {
+  transform: translateX(30px);
+}
+[data-theme-state='light'] .tt-thumb {
+  transform: translateX(0);
+}
+.tt-icon {
+  position: absolute;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  transition: color 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+}
+.tt-sun {
+  left: 7.5px;
+}
+.tt-moon {
+  right: 7.5px;
+}
+/* active icon (sits on the thumb) glows coral; inactive dims into the track */
+[data-theme-state='light'] .tt-sun,
+[data-theme-state='dark'] .tt-moon {
+  color: var(--color-accent);
+  opacity: 1;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-accent) 65%, transparent));
+}
+[data-theme-state='light'] .tt-moon,
+[data-theme-state='dark'] .tt-sun {
+  color: var(--color-whisper);
+  opacity: 0.55;
+  filter: none;
+}
+/* the coral accent dot from the design — a tiny tick above the active side */
+.tt-track::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  opacity: 0.9;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-theme-state='light'] .tt-track::after {
+  left: 12px;
+}
+[data-theme-state='dark'] .tt-track::after {
+  left: 12px;
+  transform: translateX(30px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tt-thumb,
+  .tt-track::after {
+    transition: none;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   View Transitions — radial wipe on theme change
+   The new theme is revealed through a circle expanding from the toggle.
+   Coordinates + radius are set inline by ThemeToggle at click time.
+   Reduced-motion users never trigger the transition (plain swap instead),
+   so no animation override is needed here for them.
+   ────────────────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.vt-wipe::view-transition-old(root) {
+  z-index: 1;
+}
+html.vt-wipe::view-transition-new(root) {
+  z-index: 2;
+  animation: vt-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes vt-reveal {
+  from {
+    clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0));
   }
 }
