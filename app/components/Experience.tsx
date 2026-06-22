@@ -5,6 +5,8 @@ type Role = {
   role: string
   location: string
   dates: string
+  lead: string
+  metrics: string[]
   bullets: string[]
 }
 
@@ -14,10 +16,12 @@ const ROLES: Role[] = [
     role: 'Associate Software Engineer',
     location: 'Bangalore',
     dates: 'Jul 2025 — Present',
+    lead: 'Built a real-time AI interviewer used by Meesho, Brillio and Deutsche Bank.',
+    metrics: ['<2s latency', '300+ interviews/day', '3 enterprise clients'],
     bullets: [
-      'Architected a real-time AI interviewer with a streaming STT → LLM → TTS pipeline at sub-2-second p50 latency, used by enterprise clients including Meesho, Brillio, and Deutsche Bank.',
-      'Implemented streaming orchestration over Twilio Programmable Voice (inbound and outbound calls) bridged to LiveKit (WebRTC / SIP) with token-level TTS streaming and endpoint prediction, reducing per-turn latency by ~3 seconds.',
-      'Built queue-based dispatch with fallback across multiple LLM providers, supporting peak loads of 300+ interviews per day with reliability under provider failures.',
+      'Real-time AI interviewer — a streaming STT → LLM → TTS pipeline at sub-2s p50 latency.',
+      'Twilio ↔ LiveKit orchestration (WebRTC / SIP) with token-level TTS streaming cut per-turn latency ~3s.',
+      'Queue-based dispatch with multi-LLM failover, serving Meesho, Brillio & Deutsche Bank.',
     ],
   },
   {
@@ -25,10 +29,12 @@ const ROLES: Role[] = [
     role: 'Software Engineer, AI Systems',
     location: 'Gurugram',
     dates: 'May 2025 — Jul 2025',
+    lead: 'Built real-time sales-call analysis and document-ingestion systems.',
+    metrics: ['+40% chunking accuracy', 'real-time call analysis', '2-channel desktop client'],
     bullets: [
-      'Built a scalable document ingestion engine using Pinecone and PostgreSQL with automated document-type detection, improving chunking accuracy by 40%.',
-      'Developed a real-time sales call analysis platform with speaker diarization, live transcription, and performance scoring for coaching workflows.',
-      'Engineered a cross-platform Windows / Linux desktop client streaming dual-channel call audio over WebSocket pipelines.',
+      'Document-ingestion engine (Pinecone + PostgreSQL) with auto type-detection — +40% chunking accuracy.',
+      'Real-time sales-call analysis: speaker diarization, live transcription & performance scoring.',
+      'Cross-platform Windows / Linux client streaming dual-channel call audio over WebSocket.',
     ],
   },
   {
@@ -36,10 +42,12 @@ const ROLES: Role[] = [
     role: 'Software Engineer, AI / ML',
     location: 'Gurugram',
     dates: 'Jan 2024 — Apr 2025',
+    lead: 'Built high-scale backends and RAG pipelines for domain-specific LLMs.',
+    metrics: ['100K+ concurrent users', 'RAG pipelines', 'STAR performer'],
     bullets: [
-      'Built backend systems supporting 100K+ concurrent users using Django and multithreaded architecture.',
-      'Designed retrieval-augmented generation (RAG) pipelines with vector databases for contextual document search.',
-      'Fine-tuned large language models using LoRA and QLoRA techniques for domain-specific use cases. Awarded STAR Performer.',
+      'Backend for 100K+ concurrent users on Django with a multithreaded architecture.',
+      'Retrieval-augmented generation (RAG) pipelines over vector search for contextual document retrieval.',
+      'Fine-tuned domain LLMs with LoRA / QLoRA. Awarded STAR Performer.',
     ],
   },
 ]
@@ -116,13 +124,8 @@ export default function Experience() {
                 aria-hidden
               >
                 <span className="exp-dot mt-[6px] h-2.5 w-2.5 shrink-0 rounded-full border" />
-                <span className="flex flex-col gap-1">
-                  <span className="exp-num font-mono text-[11px] tracking-[0.1em]">
-                    0{i + 1}
-                  </span>
-                  <span className="exp-company max-w-[110px] font-mono text-[10px] uppercase leading-[1.3] tracking-[0.2em]">
-                    {r.company}
-                  </span>
+                <span className="exp-num font-mono text-[11px] tracking-[0.1em]">
+                  0{i + 1}
                 </span>
               </div>
 
@@ -141,21 +144,45 @@ export default function Experience() {
                   </p>
                 </header>
 
-                <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
+                <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.15em] text-muted">
                   {r.role} · {r.location}
                 </p>
 
-                <ul className="space-y-4">
-                  {r.bullets.map((b, j) => (
-                    <li
-                      key={j}
-                      className="exp-bullet grid grid-cols-[16px_1fr] gap-3 text-[16px] leading-[1.6] text-ink/80 md:text-[17px]"
-                    >
-                      <span className="pt-[10px] font-mono text-[10px] text-accent">→</span>
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Lead line — the calm secondary anchor: plain-language
+                    "what I built". Company stays the hero; this supports it. */}
+                <p className="mb-4 max-w-[42ch] text-[18px] leading-[1.45] text-ink/90 md:text-[20px]">
+                  {r.lead}
+                </p>
+
+                {/* Metrics — one quiet inline row, separated by middots. No
+                    coral, no big numbers: support for the lead, not a dashboard. */}
+                <p className="exp-metrics mb-6 font-mono text-[11px] tracking-[0.06em] text-muted">
+                  {r.metrics.join('  ·  ')}
+                </p>
+
+                {/* Native <details> — zero-JS expand/collapse. Current role
+                    open by default; others collapsed to keep the section short.
+                    Works without JS and is keyboard-accessible out of the box. */}
+                <details className="exp-details" open={i === 0}>
+                  <summary className="exp-summary inline-flex cursor-pointer select-none items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+                    <span className="exp-summary-show">View details</span>
+                    <span className="exp-summary-hide">Hide details</span>
+                    <span className="exp-summary-mark" aria-hidden>
+                      ↓
+                    </span>
+                  </summary>
+                  <ul className="mt-6 space-y-4">
+                    {r.bullets.map((b, j) => (
+                      <li
+                        key={j}
+                        className="exp-bullet grid grid-cols-[16px_1fr] gap-3 text-[15px] leading-[1.55] text-ink/70 md:text-[16px]"
+                      >
+                        <span className="pt-[6px] font-mono text-[10px] text-muted">→</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
               </article>
             </div>
           ))}

@@ -260,10 +260,6 @@ body[data-scrolled] .site-nav {
 .exp-num {
   color: color-mix(in srgb, var(--color-exp-orange) calc(var(--lit) * 100%), var(--color-whisper));
 }
-.exp-company {
-  color: color-mix(in srgb, #ffffff calc(var(--lit) * 100%), var(--color-whisper));
-  text-shadow: 0 0 calc(10px * var(--lit)) rgba(255, 255, 255, calc(var(--lit) * 0.4));
-}
 
 @media (prefers-reduced-motion: no-preference) {
   /* once JS is live, the rail tracks scroll instead of sitting fully drawn */
@@ -329,6 +325,48 @@ body[data-scrolled] .site-nav {
       }
     }
   }
+}
+
+/* ──────────────────────────────────────────────
+   Experience — metric chips + View Details toggle
+   The metric numbers are the always-visible face of
+   each role; the detail bullets live in a native
+   <details> so expand/collapse needs no JS and stays
+   keyboard-accessible. Only the summary's label and
+   the [+]/[−] mark swap on open.
+   ────────────────────────────────────────────── */
+.exp-summary {
+  list-style: none; /* drop the default disclosure triangle */
+  width: fit-content;
+  padding: 6px 0;
+  text-underline-offset: 4px;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-muted) 45%, transparent);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.exp-summary::-webkit-details-marker {
+  display: none;
+}
+.exp-summary:hover {
+  color: var(--color-ink);
+  text-decoration-color: currentColor;
+}
+.exp-summary-mark {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+.exp-details[open] .exp-summary-mark {
+  transform: rotate(180deg); /* chevron flips up when open */
+}
+/* swap the label text on open without duplicating the toggle */
+.exp-summary-hide,
+.exp-details[open] .exp-summary-show {
+  display: none;
+}
+.exp-details[open] .exp-summary-hide {
+  display: inline;
 }
 
 /* ──────────────────────────────────────────────
