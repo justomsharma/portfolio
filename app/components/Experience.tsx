@@ -149,7 +149,7 @@ export default function Experience() {
                   {r.bullets.map((b, j) => (
                     <li
                       key={j}
-                      className="grid grid-cols-[16px_1fr] gap-3 text-[16px] leading-[1.6] text-ink/80 md:text-[17px]"
+                      className="exp-bullet grid grid-cols-[16px_1fr] gap-3 text-[16px] leading-[1.6] text-ink/80 md:text-[17px]"
                     >
                       <span className="pt-[10px] font-mono text-[10px] text-accent">→</span>
                       <span>{b}</span>
