@@ -71,20 +71,20 @@ export default function Projects() {
           </div>
         </a>
 
-        {/* Latency visualizer */}
+        {/* Latency visualizer — now live, lower on this page */}
         <a
-          href="#"
+          href="#latency"
           className="group col-span-1 row-span-1 flex flex-col justify-between rounded-sm border border-rule bg-ink/[0.025] p-7 transition-[transform,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/25 md:col-span-2"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-            Forthcoming · July 2026
+            Live now · This page ↓
           </p>
           <div>
             <h3 className="font-serif text-[32px] font-normal leading-[1.05] tracking-[-0.02em] text-ink/85 transition-colors duration-300 group-hover:text-ink">
               Latency <span className="italic">visualizer</span>
             </h3>
             <p className="mt-2 text-[13px] leading-[1.55] text-muted">
-              Interactive widget showing real-time STT → LLM → TTS latency breakdown. Embedded on this site once shipped. Demo of the work, on the work.
+              Interactive STT → LLM → TTS pipeline with a live latency counter — push to talk and hear the agent reply. Demo of the work, on the work.
             </p>
           </div>
         </a>
