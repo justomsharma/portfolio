@@ -16,12 +16,12 @@ const ROLES: Role[] = [
     role: 'Associate Software Engineer',
     location: 'Bangalore',
     dates: 'Jul 2025 — Present',
-    lead: 'Built a real-time AI interviewer used by Meesho, Brillio and Deutsche Bank.',
+    lead: 'Built a real-time AI interviewer used by several big firms.',
     metrics: ['<2s latency', '300+ interviews/day', '3 enterprise clients'],
     bullets: [
       'Real-time AI interviewer — a streaming STT → LLM → TTS pipeline at sub-2s p50 latency.',
       'Twilio ↔ LiveKit orchestration (WebRTC / SIP) with token-level TTS streaming cut per-turn latency ~3s.',
-      'Queue-based dispatch with multi-LLM failover, serving Meesho, Brillio & Deutsche Bank.',
+      'Queue-based dispatch with multi-LLM failover, serving several big firms.',
     ],
   },
   {
