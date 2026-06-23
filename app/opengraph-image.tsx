@@ -42,7 +42,7 @@ export default async function OG() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 10, height: 10, borderRadius: 999, background: '#FF6B47' }} />
-            AVAILABLE FOR AI ENGINEERING ROLES
+            BANGALORE, INDIA
           </div>
           <div style={{ color: '#FF6B47' }}>OMSHARMA.DEV</div>
         </div>

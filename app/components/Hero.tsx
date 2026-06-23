@@ -16,9 +16,8 @@ export default function Hero() {
       <div className="seq-status flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
         <span className="flex items-center gap-2">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-          Available for AI engineering roles
+          Bangalore, India
         </span>
-        <span>Bangalore, India</span>
       </div>
 
       {/* the part that shrinks as you scroll away from it */}
