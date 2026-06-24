@@ -347,6 +347,10 @@ body[data-scrolled] .site-nav {
 .exp-summary::-webkit-details-marker {
   display: none;
 }
+/* Capabilities accordion uses the same native <details>; drop Safari's marker */
+.stack-row > summary::-webkit-details-marker {
+  display: none;
+}
 .exp-summary:hover {
   color: var(--color-ink);
   text-decoration-color: currentColor;
