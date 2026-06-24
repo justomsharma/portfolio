@@ -81,11 +81,13 @@ export default function Hero() {
               </a>
               <a
                 href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.15em] text-muted transition-colors duration-300 hover:text-ink"
               >
-                Download Resume
-                <span className="inline-block transition-transform duration-300 ease-out group-hover:translate-y-0.5">
-                  &darr;
+                View Resume
+                <span className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-0.5">
+                  ↗
                 </span>
               </a>
             </div>

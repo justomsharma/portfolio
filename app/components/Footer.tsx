@@ -11,7 +11,7 @@ export default function Footer() {
       label: 'Code',
       items: [
         { text: 'GitHub', href: 'https://github.com/justomsharma' },
-        { text: 'Résumé · PDF', href: '/resume.pdf' },
+        { text: 'Resume', href: '/resume.pdf', newTab: true },
       ],
     },
     {
@@ -49,8 +49,8 @@ export default function Footer() {
               <a
                 key={item.text}
                 href={item.href}
-                target={item.href.startsWith('http') ? '_blank' : undefined}
-                rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                target={item.href.startsWith('http') || item.newTab ? '_blank' : undefined}
+                rel={item.href.startsWith('http') || item.newTab ? 'noopener noreferrer' : undefined}
                 className="block py-1 text-[14px] text-ink transition-colors duration-200 hover:text-accent"
               >
                 {item.text}
