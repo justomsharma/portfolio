@@ -478,6 +478,153 @@ body[data-scrolled] .site-nav {
 }
 
 /* ──────────────────────────────────────────────
+   Capabilities — "The Living Index"
+   The index plays like a score: each row strikes as it crosses the viewport
+   (title rises, essence reveals, the coral mastery-bar draws to its true
+   weight), and tools stagger in like notes when a row opens.
+
+   Everything is pure CSS. The reveal rides native scroll-driven animation
+   (animation-timeline: view()) — no JS, no IntersectionObserver, no listeners,
+   nothing on the main thread. Only transform / opacity / clip-path / scaleX
+   are animated, so it stays on the compositor.
+
+   Fallback-safe by construction: every default below is the FINISHED, fully
+   visible state. The initial (hidden) states + animations live ONLY inside
+   prefers-reduced-motion:no-preference, so without JS, under reduced motion,
+   or on browsers without animation-timeline, the index reads as complete.
+   Light + dark both work — colours resolve through the same --color-* tokens.
+   ────────────────────────────────────────────── */
+
+/* Headline accent underline — resting/fallback: fully drawn. currentColor is
+   the coral accent (it resolves toward ink down the page like the rest). */
+.cap-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  padding-bottom: 0.04em;
+}
+
+/* Mastery-bar — ghost track at full scale, coral fill scaled to the row weight.
+   Resting state IS the final length (scaleX(--w)); the entry animation only
+   overrides the start. Brightens on hover / open. */
+.cap-bar-track {
+  display: block;
+  margin-top: 14px;
+  height: 2px;
+  width: clamp(120px, 30vw, 240px);
+  max-width: 100%;
+  border-radius: 2px;
+  background: var(--color-rule);
+  overflow: hidden;
+}
+.cap-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(var(--w, 0.8));
+  background: var(--color-accent);
+  opacity: 0.55;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+.stack-row:hover .cap-bar,
+.stack-row[open] .cap-bar {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 55%, transparent));
+}
+
+/* peek — the inline tool preview, clipped into a right-edge fade so it
+   visibly trails off ("there's more"). Width is fluid and never crowds the
+   count beside it. The mask is the whole point, so it lives here not in markup. */
+.cap-peek {
+  max-width: clamp(110px, 20vw, 260px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  -webkit-mask: linear-gradient(to right, #000 50%, transparent 100%);
+  mask: linear-gradient(to right, #000 50%, transparent 100%);
+}
+
+/* tool middot separators — kept in CSS so the row stays a clean list of spans */
+.cap-tool:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.6em;
+  color: var(--color-whisper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* title + essence rise as the row enters; essence trails the title slightly
+       (its range starts later) so the row reads top-to-bottom, like a struck note */
+    body[data-motion] .cap-title {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: cap-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 26%;
+    }
+    body[data-motion] .cap-essence {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: cap-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 9% cover 30%;
+    }
+    @keyframes cap-rise {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* the strike: the bar draws from nothing to its true weight as the row crosses */
+    body[data-motion] .cap-bar {
+      transform: scaleX(0);
+      animation: cap-bar-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 6% cover 32%;
+    }
+    @keyframes cap-bar-draw {
+      to {
+        transform: scaleX(var(--w, 0.8));
+      }
+    }
+
+    /* headline underline draws once as the heading enters */
+    body[data-motion] .cap-underline {
+      background-size: 0% 1px;
+      animation: cap-underline-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 38%;
+    }
+    @keyframes cap-underline-draw {
+      to {
+        background-size: 100% 1px;
+      }
+    }
+  }
+
+  /* card-deal reveal — on open, each tool is dealt left-to-right off the title:
+     it starts tucked left and tilted, then settles flat, staggered by --i so
+     they fan out like a hand of cards. The [open] rule sets the visible state
+     regardless of support, so it degrades to "all visible"; under reduced
+     motion this whole block is gated out, so they're simply visible. */
+  .stack-row .cap-tool {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-12px) translateY(2px) rotate(-2.5deg);
+    transform-origin: left center;
+  }
+  .stack-row[open] .cap-tool {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 30ms);
+  }
+}
+
+/* ──────────────────────────────────────────────
    View Transitions — radial wipe on theme change
    The new theme is revealed through a circle expanding from the toggle.
    Coordinates + radius are set inline by ThemeToggle at click time.
