@@ -203,7 +203,7 @@ export default function Stack() {
       className="mx-auto max-w-[920px] border-t border-rule px-6 py-32 md:px-12 md:py-36"
     >
       <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
-        § 4 — Capabilities
+        § 3 — Capabilities
       </p>
       <h2
         className="mb-16 font-serif font-light leading-[0.95] tracking-[-0.03em]"

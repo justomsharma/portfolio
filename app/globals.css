@@ -478,6 +478,86 @@ body[data-scrolled] .site-nav {
 }
 
 /* ──────────────────────────────────────────────
+   Project cards — "states, not destinations"
+   Three cards have no destination yet (in progress / forthcoming / unlinked).
+   They must not borrow the real links' "navigate here" language (lift + border
+   → ink). Instead they get their own honest vocabulary: cursor stays default,
+   the border warms toward CORAL (not ink), and a soft coral bloom rises from
+   within on hover — reads as "alive / in progress", not "click me".
+
+   Only transform (the Tailwind lift) + opacity (the bloom) animate, so it all
+   rides the compositor — no JS, no reflow, nothing on the main thread. The
+   bloom's initial/animated state lives only under no-preference; the resting
+   card is the complete, fully-legible fallback.
+   ────────────────────────────────────────────── */
+.proj-still {
+  position: relative;
+  isolation: isolate;
+}
+.proj-still::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  /* coral bloom rising from the bottom edge */
+  background: radial-gradient(
+    120% 130% at 50% 118%,
+    color-mix(in srgb, var(--color-accent) 20%, transparent),
+    transparent 70%
+  );
+}
+/* the featured card sits on a coral fill — a coral bloom would vanish, so it
+   blooms with the page background colour instead (a soft inner light). */
+.proj-still--on-accent::after {
+  background: radial-gradient(
+    120% 130% at 50% 118%,
+    color-mix(in srgb, var(--color-background) 22%, transparent),
+    transparent 70%
+  );
+}
+
+/* status dot — reuses the site's live-dot vocabulary (cf. the Hero locator dot
+   and the experience-rail node pulse). Filled + breathing = live/in progress;
+   hollow ring = scheduled/forthcoming. */
+.proj-dot--live {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proj-still::after {
+    transition: opacity 0.5s ease-out;
+  }
+  .proj-still:hover::after {
+    opacity: 1;
+  }
+  /* breathing halo on the live dot */
+  .proj-dot--live::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 9999px;
+    pointer-events: none;
+    background: currentColor;
+    opacity: 0.5;
+    animation: proj-dot-pulse 2.4s ease-out infinite;
+  }
+  @keyframes proj-dot-pulse {
+    0% {
+      transform: scale(0.55);
+      opacity: 0.5;
+    }
+    70%,
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+}
+
+/* ──────────────────────────────────────────────
    Capabilities — "The Living Index"
    The index plays like a score: each row strikes as it crosses the viewport
    (title rises, essence reveals, the coral mastery-bar draws to its true
