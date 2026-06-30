@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 /* ──────────────────────────────────────────────────────────────────────────
    ASCII portrait — an interactive particle field.
 
-   The source photo (/profile.png, a transparent cut-out) is scanned ONCE into
+   The source photo (/profile.webp, a transparent cut-out) is scanned ONCE into
    a grid, storing only each cell's brightness. Each cell is a particle: it
    flies in on load and settles into the face, and the pointer pushes nearby
    glyphs away with a spring pulling them home — so the portrait ripples under
@@ -35,7 +35,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const CHARS = ' .:-=+*#%@'.split('')
 const LAST = CHARS.length - 1
-const SRC = '/profile.png'
+const SRC = '/profile.webp'
 
 type RawParticle = { x: number; y: number; bright: number }
 type Particle = {
