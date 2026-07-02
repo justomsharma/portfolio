@@ -2,7 +2,7 @@ export default function Projects() {
   return (
     <section id="work" className="mx-auto max-w-[1100px] border-t border-rule px-6 py-32 md:px-12 md:py-36">
       <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-accent">
-        § 4 — Personal projects
+        § 5 — Personal projects
       </p>
       <h2
         className="mb-16 font-serif font-light leading-[0.95] tracking-[-0.03em]"
